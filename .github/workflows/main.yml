@@ -16,6 +16,8 @@ jobs:
         with:
           username: gabrieloliveiranet
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository: gabrieloliveiranet/
+          repository: gabrieloliveiranet/minecraft-bedrock-server-editor
           dockerfile: Dockerfile
-          tag_with_ref: true
+          tags: |
+            gabrieloliveiranet/minecraft-bedrock-server-editor:latest
+            gabrieloliveiranet/minecraft-bedrock-server-editor:1.16.40.02

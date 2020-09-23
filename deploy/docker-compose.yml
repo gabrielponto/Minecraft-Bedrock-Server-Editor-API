@@ -1,0 +1,10 @@
+version: '3.1'
+services:
+  web:
+    image: gabrieloliveiranet/minecraft-bedrock-server-editor
+    environment:
+      - DEFAULT_ADMIN_USERNAME
+      - DEFAULT_ADMIN_PASSWORD
+      - DEFAULT_ADMIN_EMAIL
+    volumes:
+      - ./worlds:/server/worlds

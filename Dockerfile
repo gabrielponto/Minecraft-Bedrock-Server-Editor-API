@@ -22,3 +22,19 @@ COPY deploy/server/server.properties /server/server.properties
 
 WORKDIR /app
 RUN virtualenv3 .venv --python python3 && .venv/bin/pip install -r requirements.txt
+
+COPY deploy/supervisor/* /etc/supervisor/conf.d/
+COPY deploy/supervisor.conf /etc/supervisor/supervisord.conf
+
+COPY deploy/init.sh /init
+RUN mkdir /var/log/supervisor
+RUN chmod +x /init
+CMD ["/init"]
+
+# make log links
+RUN ln -s /dev/stderr /var/log/supervisor/app_error.log
+RUN ln -s /dev/stdout /var/log/supervisor/app.log
+RUN ln -s /dev/stderr /var/log/supervisor/bedrock.err
+RUN ln -s /dev/stdout /var/log/supervisor/bedrock.out
+
+EXPOSE 80 19132
