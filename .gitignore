@@ -3,3 +3,5 @@ __pychache__
 .vscode
 .venv
 .local*
+.env
+db.sqlite3

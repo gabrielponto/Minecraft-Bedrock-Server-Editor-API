@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from decouple import Csv, config
+from dj_database_url import parse as db_url
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,10 +27,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '_3e6x*-blh+uy$rt@48-166l3hq1%hf09yd0m&zn5at42$w1ny'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv(), default='.localhost')
 
 # Application definition
 
@@ -73,12 +76,38 @@ WSGI_APPLICATION = 'bedrockeditor.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+DATABASE_ENGINE = config('DATABASE_ENGINE', default='sqlite')
+DATABASE_USER = config('DATABASE_USER', default='')
+DATABASE_PASSWORD = config('DATABASE_PASSWORD', default='')
+DATABASE_HOST = config('DATABASE_HOST', default='')
+DATABASE_PORT = config('DATABASE_PORT', default='')
+DATABASE_NAME = config('DATABASE_NAME', default='db.sqlite3')
+
+DATABASE_CREDENTIALS = ''
+if DATABASE_USER or DATABASE_PASSWORD or DATABASE_HOST or DATABASE_PORT:
+    DATABASE_USER_PASSWORD = '{}:{}'.format(DATABASE_USER, DATABASE_PASSWORD)
+    DATABASE_HOST_PORT = '{}:{}'.format(DATABASE_HOST, DATABASE_PORT)
+    DATABASE_CREDENTIALS = '{}@{}'.format(DATABASE_USER_PASSWORD, DATABASE_HOST_PORT)
+
+DATABASE_DEFAULT = '{}://{}/{}'.format(DATABASE_ENGINE, DATABASE_CREDENTIALS, DATABASE_NAME)
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': config(
+        'DATABASE_URL',
+        default=DATABASE_DEFAULT,
+        cast=db_url
+    )
 }
+
+EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = config('EMAIL_HOST', default='localhost')
+EMAIL_PORT = config('EMAIL_PORT', default=25)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='root')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='root')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=False, cast=bool)
+EMAIL_USE_SSL = config('EMAIL_USE_SSL', default=False, cast=bool)
+EMAIL_TIMEOUT = config('EMAIL_TIMEOUT', default=None)
+EMAIL_FROM = config('EMAIL_FROM', default='contato@oliveiradigital.com.br')
 
 
 # Password validation
@@ -103,9 +132,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Recife'
 
 USE_I18N = True
 
@@ -118,3 +147,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+sentry_sdk.init(
+    dsn=config('SENTRY_DSN'),
+    integrations=[DjangoIntegration()],
+    traces_sample_rate=0,
+    environment=config('SENTRY_ENVIRONMENT', default='Local'),
+    release=config('SENTRY_RELEASE', default='Development'),
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
