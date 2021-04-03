@@ -1,0 +1,28 @@
+version: '3.2'
+services:
+  api:
+    image: registry.gitlab.com/geraldofcastro/jupiter:frontend-$DOCKER_TAG
+    environment:
+      - REACT_APP_BACKEND_URL
+      - PORT=5002
+    ports:
+       - "$HOST_FRONTEND_PORT:5002"
+  backend:
+    image: registry.gitlab.com/geraldofcastro/jupiter:backend-$DOCKER_TAG
+    environment:
+      - NODE_ENV
+      - DB_HOST
+      - DB_PORT
+      - DB_USER
+      - DB_PASS
+      - DB_NAME
+      - PORT=8081
+      - BACKEND_URL
+      - FRONTEND_URL
+      - PROXY_PORT=8081
+      - JWT_SECRET
+      - JWT_REFRESH_SECRET
+    ports:
+      - "$HOST_BACKEND_PORT:8081"
+    volumes:
+      - ./public:/onecode/public
