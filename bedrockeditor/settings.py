@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'minecraft'
 ]
 
 MIDDLEWARE = [
@@ -149,7 +150,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 sentry_sdk.init(
-    dsn=config('SENTRY_DSN'),
+    dsn=config('SENTRY_DSN', default=None),
     integrations=[DjangoIntegration()],
     traces_sample_rate=0,
     environment=config('SENTRY_ENVIRONMENT', default='Local'),

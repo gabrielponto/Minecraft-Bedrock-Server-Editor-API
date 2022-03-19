@@ -5,3 +5,5 @@ __pychache__
 .local*
 .env
 db.sqlite3
+deploy/data
+data

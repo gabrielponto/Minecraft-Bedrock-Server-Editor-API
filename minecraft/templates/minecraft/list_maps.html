@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <h1>Alterar mapa do servidor</h1>
+    </head>
+    <body>
+        <h2>Status: {{ status }}</h2>
+        <h2>Alterar mapa</h2>
+        <form action="{% url 'minecraft_change_map' %}" method="post">
+            {% csrf_token %}
+            <label for="map">
+                Mapa:
+                <select name="map" id="map">
+                    {% for map in maps %}
+                        <option value="{{ map }}" {% if map == current_map %}selected="selected"{%endif%}>{{ map }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <input type="submit" value="Alterar" />
+        </form>
+        <h2>Criar mapa</h2>
+        <form action="{% url 'minecraft_create_map' %}" method="post">
+            {% csrf_token %}
+            <label for="map">
+                Nome: <input type="text" name="map" />
+            </label>
+            <label for="seed">
+                Seed: <input type="text" name="seed" />
+            </label>
+            <input type="submit" value="Criar" />
+        </form>
+    </body>
+</html>
