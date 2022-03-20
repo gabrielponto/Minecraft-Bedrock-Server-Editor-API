@@ -1,7 +1,7 @@
 version: '3.2'
 services:
   server:
-    image: itzg/minecraft-bedrock-server
+    image: gabrieloliveiranet/minecraft-bedrock-server
     container_name: minecraft-bedrock-server
     environment:
       - SERVER_NAME=Minecraft
@@ -11,7 +11,7 @@ services:
       - ALLOW_CHEATS=true
       - MAX_PLAYERS=10
       - ONLINE_MODE=true
-      - WHITE_LIST=false
+      - WHITE_LIST=true
       - VIEW_DISTANCE=10
       - TICK_DISTANCE=4
       - PLAYER_IDLE_TIMEOUT=120
