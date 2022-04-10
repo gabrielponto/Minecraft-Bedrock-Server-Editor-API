@@ -5,6 +5,13 @@
     </head>
     <body>
         <h2>Status: {{ status }}</h2>
+        <h2>Behavior packs atuais habilitados no mundo atual</h2>
+        {% for behavior_pack in enabled_behavior_packs %}
+            <p>{{ behavior_pack }}</p>
+        {% endfor %}
+        {% if not enabled_behavior_packs %}
+            <p>Nenhum ativo</p>
+        {% endif %}
         <h2>Alterar mapa</h2>
         <form action="{% url 'minecraft_change_map' %}" method="post">
             {% csrf_token %}
@@ -18,6 +25,19 @@
             </label>
             <input type="submit" value="Alterar" />
         </form>
+        <h2>Habilitar Behavior Pack para o mapa atual</h2>
+        <form action="{% url 'minecraft_enable_behavior_pack' %}" method="post">
+            {% csrf_token %}
+            <label for="behavior_pack">
+                Pack:
+                <select name="behavior_pack" id="behavior_pack">
+                    {% for behavior_pack in behavior_packs %}
+                        <option value="{{ behavior_pack }}">{{ behavior_pack }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <input type="submit" value="Habilitar" />
+        </form>
         <h2>Criar mapa</h2>
         <form action="{% url 'minecraft_create_map' %}" method="post">
             {% csrf_token %}
@@ -28,6 +48,12 @@
                 Seed: <input type="text" name="seed" />
             </label>
             <input type="submit" value="Criar" />
+        </form>
+        <h2>Adicionar Addon no mapa atual</h2>
+        <form action="{% url 'minecraft_install_addon' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ upload_form }}
+            <input type="submit" value="Adicionar" />
         </form>
     </body>
 </html>
